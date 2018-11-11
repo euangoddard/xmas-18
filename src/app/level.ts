@@ -7,8 +7,16 @@ export const enum LevelCell {
 
 export class Level {
   static parse(levelRaw: string): Level {
-    const cellsRaw = levelRaw.split('');
-    return new Level([cellsRaw.map(selectCell)]);
+    assertSingleSanta(levelRaw);
+    const rowsRaw = levelRaw.split('\n');
+    return new Level(
+      rowsRaw.map(r =>
+        r
+          .trim()
+          .split('')
+          .map(selectCell),
+      ),
+    );
   }
 
   constructor(public readonly cells: ReadonlyArray<ReadonlyArray<LevelCell>>) {}
@@ -32,9 +40,20 @@ function selectCell(cellRaw: string): LevelCell {
   return cell;
 }
 
+function assertSingleSanta(levelRaw: string): void {
+  const matches = levelRaw.match(new RegExp(`${SANTA_TOKEN}{1}`, 'g'));
+  if (matches === null) {
+    throw new LevelCellError('There can only be one Santa (found none)');
+  } else if (matches.length !== 1) {
+    throw new LevelCellError(`There can only be one Santa (found ${matches.length})`);
+  }
+}
+
+const SANTA_TOKEN = 'S';
+
 const CELL_MAP = new Map<string, LevelCell>([
   ['-', LevelCell.Empty],
-  ['S', LevelCell.Santa],
+  [SANTA_TOKEN, LevelCell.Santa],
   ['P', LevelCell.Present],
   ['G', LevelCell.Grinch],
 ]);
