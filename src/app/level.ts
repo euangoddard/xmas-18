@@ -5,28 +5,47 @@ export const enum LevelCell {
   Grinch,
 }
 
-export class Level {
+interface LevelLike {
+  rows: number;
+  columns: number;
+}
+
+export class Level implements LevelLike {
+  constructor(public readonly cells: ReadonlyArray<ReadonlyArray<LevelCell>>) {
+    this.rows = this.cells.length;
+    this.columns = this.cells.length ? this.cells[0].length : 0;
+  }
+
+  readonly rows: number;
+  readonly columns: number;
+
   static parse(levelRaw: string): Level {
+    // TODO: Move this assertion to the constructor
     assertSingleSanta(levelRaw);
     const rowsRaw = levelRaw.split('\n');
     return new Level(
-      rowsRaw.map(r =>
-        r
+      rowsRaw.map(row =>
+        row
           .trim()
           .split('')
           .map(selectCell),
       ),
     );
   }
+}
 
-  constructor(public readonly cells: ReadonlyArray<ReadonlyArray<LevelCell>>) {}
+export const enum LevelAttemptState {
+  Untouched,
+  Touched,
+}
 
-  get rows(): number {
-    return this.cells.length;
-  }
+export class LevelAttempt implements LevelLike {
+  readonly rows: number;
+  readonly columns: number;
 
-  get columns(): number {
-    return this.cells.length ? this.cells[0].length : 0;
+  constructor(private level: Level) {
+    this.rows = level.rows;
+    this.columns = level.columns;
   }
 }
 

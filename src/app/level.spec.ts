@@ -1,3 +1,4 @@
+import { LevelAttempt } from './level';
 import { Level, LevelCell, LevelCellError } from 'src/app/level';
 
 describe('Level', () => {
@@ -63,5 +64,27 @@ describe('Level', () => {
         }).toThrow(new LevelCellError('There can only be one Santa (found none)'));
       });
     });
+  });
+});
+
+describe('Level attempt', () => {
+  describe('Level reflection', () => {
+    it('should reflect the rows of the underlying level', () => {
+      const level = Level.parse('S\n-');
+      const levelAttempt = new LevelAttempt(level);
+      expect(levelAttempt.rows).toEqual(2);
+      expect(levelAttempt.rows).toEqual(level.rows);
+    });
+
+    it('should reflect the columns of the underlying level', () => {
+      const level = Level.parse('S-G');
+      const levelAttempt = new LevelAttempt(level);
+      expect(levelAttempt.columns).toEqual(3);
+      expect(levelAttempt.columns).toEqual(level.columns);
+    });
+  });
+
+  describe('Initial state', () => {
+    it('should position Santa as per the level', () => {});
   });
 });
