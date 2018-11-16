@@ -80,18 +80,36 @@ export interface LevelAttemptCell {
   state: LevelAttemptState;
 }
 
+export type LevelAttemptCells = ReadonlyArray<ReadonlyArray<LevelAttemptCell>>;
+
 export class LevelAttempt {
   readonly rows: number;
   readonly columns: number;
 
-  // private readonly cellSubject: BehaviorSubject<ReadonlyArray<ReadonlyArray<LevelAttemptCell>>>
-  // readonly cells$: Observable<ReadonlyArray<ReadonlyArray<LevelAttemptCell>>>
+  private readonly cellSubject: BehaviorSubject<LevelAttemptCells>;
+  readonly cells$: Observable<LevelAttemptCells>;
 
   constructor(private level: Level) {
-    // this.cellSubject = new BehaviorSubject()
+    this.cellSubject = new BehaviorSubject(this.getInitialState());
+    this.cells$ = this.cellSubject.asObservable();
 
     this.rows = this.level.cells.length;
     this.columns = this.level.cells[0].length;
+  }
+
+  get cells(): LevelAttemptCells {
+    return this.cellSubject.getValue();
+  }
+
+  private getInitialState(): LevelAttemptCells {
+    return this.level.cells.map(row => {
+      return row.map(cell => {
+        return {
+          cell,
+          state: cell === LevelCell.Santa ? LevelAttemptState.Touched : LevelAttemptState.Untouched,
+        };
+      });
+    });
   }
 }
 

@@ -1,4 +1,11 @@
-import { Level, LevelAttempt, LevelCell, LevelError } from 'src/app/level';
+import {
+  Level,
+  LevelAttempt,
+  LevelAttemptCell,
+  LevelAttemptState,
+  LevelCell,
+  LevelError,
+} from 'src/app/level';
 
 describe('Level', () => {
   describe('Sense checking', () => {
@@ -88,6 +95,29 @@ describe('Level attempt', () => {
   });
 
   describe('Initial state', () => {
-    it('should position Santa as per the level', () => {});
+    it('should position Santa as per the level', () => {
+      const level = Level.parse('S');
+      const levelAttempt = new LevelAttempt(level);
+      assertCellAttributes(levelAttempt.cells[0][0], LevelCell.Santa, LevelAttemptState.Touched);
+    });
+
+    it('should mark all non-Santa-cells as untouched', () => {
+      const level = Level.parse('S-\nGP');
+      const levelAttempt = new LevelAttempt(level);
+      const cells = levelAttempt.cells;
+
+      assertCellAttributes(cells[0][1], LevelCell.Empty, LevelAttemptState.Untouched);
+      assertCellAttributes(cells[1][0], LevelCell.Grinch, LevelAttemptState.Untouched);
+      assertCellAttributes(cells[1][1], LevelCell.Present, LevelAttemptState.Untouched);
+    });
+
+    function assertCellAttributes(
+      attemptCell: LevelAttemptCell,
+      expectedCell: LevelCell,
+      expectedState: LevelAttemptState,
+    ): void {
+      expect(attemptCell.cell).toEqual(expectedCell);
+      expect(attemptCell.state).toEqual(expectedState);
+    }
   });
 });
