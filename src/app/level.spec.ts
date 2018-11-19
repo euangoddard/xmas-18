@@ -164,4 +164,18 @@ describe('Level attempt', () => {
       expect(attemptCell.state).toEqual(expectedState);
     }
   });
+
+  describe('Moving to available cells', () => {
+    it('should throw an error if the move is not available', () => {
+      fail('Implement me');
+    });
+
+    it('should updated the touched state of the cell that is being moved to', () => {
+      fail('Implement me');
+    })
+
+    it('should update the pool of available moves', () => {
+      fail('Implement me');
+    })
+  });
 });
