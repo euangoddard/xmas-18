@@ -111,6 +111,50 @@ describe('Level attempt', () => {
       assertCellAttributes(cells[1][1], LevelCell.Present, LevelAttemptState.Untouched);
     });
 
+    describe('Available moves', () => {
+      it('should allow moves to columns adjacent to Santa', () => {
+        const levelAttempt = new LevelAttempt(Level.parse('-S-'));
+        assertAvailableCells(levelAttempt, [[true, false, true]]);
+      });
+
+      it('should allow moves to rows adjacent to Santa', () => {
+        const levelAttempt = new LevelAttempt(Level.parse('-\nS\n-'));
+        assertAvailableCells(levelAttempt, [[true], [false], [true]]);
+      });
+
+      it('should disallow moves to columns which would take the user off the grid', () => {
+        assertAvailableCells(new LevelAttempt(Level.parse('S-')), [[false, true]]);
+        assertAvailableCells(new LevelAttempt(Level.parse('-S')), [[true, false]]);
+      });
+
+      it('should disallow moves to rows which would take the user off the grid', () => {
+        assertAvailableCells(new LevelAttempt(Level.parse('S\n-')), [[false], [true]]);
+        assertAvailableCells(new LevelAttempt(Level.parse('-\nS')), [[true], [false]]);
+      });
+
+      function assertAvailableCells(levelAttempt: LevelAttempt, availability: boolean[][]): void {
+        expect(levelAttempt.rows).toEqual(
+          availability.length,
+          `Expected availability to have ${levelAttempt.rows} rows`,
+        );
+        expect(levelAttempt.columns).toEqual(
+          availability[0].length,
+          `Expected availability to have ${levelAttempt.columns} columns`,
+        );
+
+        for (let i = 0; i < levelAttempt.rows; i++) {
+          for (let j = 0; j < levelAttempt.columns; j++) {
+            const attemptCell = levelAttempt.cells[i][j];
+            const expectedAvailability = availability[i][j];
+            expect(attemptCell.isAvailable).toEqual(
+              expectedAvailability,
+              `Failed on row: ${i}, column: ${j}`,
+            );
+          }
+        }
+      }
+    });
+
     function assertCellAttributes(
       attemptCell: LevelAttemptCell,
       expectedCell: LevelCell,

@@ -78,6 +78,7 @@ export const enum LevelAttemptState {
 export interface LevelAttemptCell {
   cell: LevelCell;
   state: LevelAttemptState;
+  isAvailable: boolean;
 }
 
 export type LevelAttemptCells = ReadonlyArray<ReadonlyArray<LevelAttemptCell>>;
@@ -107,6 +108,7 @@ export class LevelAttempt {
         return {
           cell,
           state: cell === LevelCell.Santa ? LevelAttemptState.Touched : LevelAttemptState.Untouched,
+          isAvailable: cell !== LevelCell.Santa,
         };
       });
     });
