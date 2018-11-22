@@ -1,14 +1,9 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-
-export const enum LevelCell {
-  Empty,
-  Santa,
-  Present,
-  Grinch,
-}
+import { LevelError } from 'src/app/level.errors';
+import { LevelAttemptCells, LevelAttemptState, LevelCell, LevelCells } from 'src/app/level.models';
 
 export class Level {
-  constructor(public readonly cells: ReadonlyArray<ReadonlyArray<LevelCell>>) {
+  constructor(public readonly cells: LevelCells) {
     this.assertNotEmpty();
     this.assertSingleSanta();
     this.assertHomogeneousRows();
@@ -70,19 +65,6 @@ export class Level {
   }
 }
 
-export const enum LevelAttemptState {
-  Untouched,
-  Touched,
-}
-
-export interface LevelAttemptCell {
-  cell: LevelCell;
-  state: LevelAttemptState;
-  isAvailable: boolean;
-}
-
-export type LevelAttemptCells = ReadonlyArray<ReadonlyArray<LevelAttemptCell>>;
-
 export class LevelAttempt {
   readonly rows: number;
   readonly columns: number;
@@ -102,6 +84,8 @@ export class LevelAttempt {
     return this.cellSubject.getValue();
   }
 
+  move(row: number, column: number): void {}
+
   private getInitialState(): LevelAttemptCells {
     return this.level.cells.map(row => {
       return row.map(cell => {
@@ -114,8 +98,6 @@ export class LevelAttempt {
     });
   }
 }
-
-export class LevelError extends Error {}
 
 function selectCell(cellRaw: string): LevelCell {
   const cell = CELL_MAP.get(cellRaw);

@@ -1,11 +1,9 @@
 import {
   Level,
   LevelAttempt,
-  LevelAttemptCell,
-  LevelAttemptState,
-  LevelCell,
-  LevelError,
-} from 'src/app/level';
+  } from 'src/app/level';
+import { LevelError, LevelMoveError } from 'src/app/level.errors';
+import { LevelAttemptCell, LevelAttemptState, LevelCell } from 'src/app/level.models';
 
 describe('Level', () => {
   describe('Sense checking', () => {
@@ -131,51 +129,76 @@ describe('Level attempt', () => {
         assertAvailableCells(new LevelAttempt(Level.parse('S\n-')), [[false], [true]]);
         assertAvailableCells(new LevelAttempt(Level.parse('-\nS')), [[true], [false]]);
       });
-
-      function assertAvailableCells(levelAttempt: LevelAttempt, availability: boolean[][]): void {
-        expect(levelAttempt.rows).toEqual(
-          availability.length,
-          `Expected availability to have ${levelAttempt.rows} rows`,
-        );
-        expect(levelAttempt.columns).toEqual(
-          availability[0].length,
-          `Expected availability to have ${levelAttempt.columns} columns`,
-        );
-
-        for (let i = 0; i < levelAttempt.rows; i++) {
-          for (let j = 0; j < levelAttempt.columns; j++) {
-            const attemptCell = levelAttempt.cells[i][j];
-            const expectedAvailability = availability[i][j];
-            expect(attemptCell.isAvailable).toEqual(
-              expectedAvailability,
-              `Failed on row: ${i}, column: ${j}`,
-            );
-          }
-        }
-      }
     });
-
-    function assertCellAttributes(
-      attemptCell: LevelAttemptCell,
-      expectedCell: LevelCell,
-      expectedState: LevelAttemptState,
-    ): void {
-      expect(attemptCell.cell).toEqual(expectedCell);
-      expect(attemptCell.state).toEqual(expectedState);
-    }
   });
 
   describe('Moving to available cells', () => {
     it('should throw an error if the move is not available', () => {
-      fail('Implement me');
+      const levelAttempt = new LevelAttempt(Level.parse('S-'));
+      expect(() => {
+        levelAttempt.move(0, 0);
+      }).toThrow(new LevelMoveError('Cannot move to cell (0, 0) - it is not available'));
+    });
+
+    it('should throw an error if the move is illegal', () => {
+      const levelAttempt = new LevelAttempt(Level.parse('S-'));
+      expect(() => {
+        levelAttempt.move(2, 0);
+      }).toThrow(new LevelMoveError('Cannot move to cell (2, 0) - it is not a valid cell'));
     });
 
     it('should updated the touched state of the cell that is being moved to', () => {
-      fail('Implement me');
-    })
+      const levelAttempt = new LevelAttempt(Level.parse('S-'));
+      levelAttempt.move(0, 1);
+      assertCellAttributes(levelAttempt.cells[0][0], LevelCell.Empty, LevelAttemptState.Touched);
+      assertCellAttributes(levelAttempt.cells[0][1], LevelCell.Santa, LevelAttemptState.Touched);
+    });
 
     it('should update the pool of available moves', () => {
-      fail('Implement me');
-    })
+      const levelAttempt = new LevelAttempt(Level.parse('-S-\n---\n---'));
+      assertAvailableCells(levelAttempt, [
+        [true, false, true],
+        [false, true, false],
+        [false, false, false],
+      ]);
+
+      levelAttempt.move(1, 1);
+      assertAvailableCells(levelAttempt, [
+        [false, true, false],
+        [true, false, true],
+        [false, true, false],
+      ]);
+    });
   });
+
+  function assertCellAttributes(
+    attemptCell: LevelAttemptCell,
+    expectedCell: LevelCell,
+    expectedState: LevelAttemptState,
+  ): void {
+    expect(attemptCell.cell).toEqual(expectedCell);
+    expect(attemptCell.state).toEqual(expectedState);
+  }
+
+  function assertAvailableCells(levelAttempt: LevelAttempt, availability: boolean[][]): void {
+    expect(levelAttempt.rows).toEqual(
+      availability.length,
+      `Expected availability to have ${levelAttempt.rows} rows`,
+    );
+    expect(levelAttempt.columns).toEqual(
+      availability[0].length,
+      `Expected availability to have ${levelAttempt.columns} columns`,
+    );
+
+    for (let i = 0; i < levelAttempt.rows; i++) {
+      for (let j = 0; j < levelAttempt.columns; j++) {
+        const attemptCell = levelAttempt.cells[i][j];
+        const expectedAvailability = availability[i][j];
+        expect(attemptCell.isAvailable).toEqual(
+          expectedAvailability,
+          `Failed on row: ${i}, column: ${j}`,
+        );
+      }
+    }
+  }
 });
