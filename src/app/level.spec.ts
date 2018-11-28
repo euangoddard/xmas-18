@@ -1,7 +1,4 @@
-import {
-  Level,
-  LevelAttempt,
-  } from 'src/app/level';
+import { Level, LevelAttempt } from 'src/app/level';
 import { LevelError, LevelMoveError } from 'src/app/level.errors';
 import { LevelAttemptCell, LevelAttemptState, LevelCell } from 'src/app/level.models';
 
@@ -111,13 +108,13 @@ describe('Level attempt', () => {
 
     describe('Available moves', () => {
       it('should allow moves to columns adjacent to Santa', () => {
-        const levelAttempt = new LevelAttempt(Level.parse('-S-'));
-        assertAvailableCells(levelAttempt, [[true, false, true]]);
+        const levelAttempt = new LevelAttempt(Level.parse('--S--'));
+        assertAvailableCells(levelAttempt, [[false, true, false, true, false]]);
       });
 
       it('should allow moves to rows adjacent to Santa', () => {
-        const levelAttempt = new LevelAttempt(Level.parse('-\nS\n-'));
-        assertAvailableCells(levelAttempt, [[true], [false], [true]]);
+        const levelAttempt = new LevelAttempt(Level.parse('-\n-\nS\n-\n-'));
+        assertAvailableCells(levelAttempt, [[false], [true], [false], [true], [false]]);
       });
 
       it('should disallow moves to columns which would take the user off the grid', () => {
