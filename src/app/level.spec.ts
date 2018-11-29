@@ -151,6 +151,17 @@ describe('Level attempt', () => {
       assertCellAttributes(levelAttempt.cells[0][1], LevelCell.Santa, LevelAttemptState.Touched);
     });
 
+    it('should track the number of moves made on the level', () => {
+      const levelAttempt = new LevelAttempt(Level.parse('S---'));
+      expect(levelAttempt.moves).toBe(0);
+      levelAttempt.move(0, 1);
+      expect(levelAttempt.moves).toBe(1);
+      levelAttempt.move(0, 2);
+      expect(levelAttempt.moves).toBe(2);
+      levelAttempt.move(0, 1);
+      expect(levelAttempt.moves).toBe(3);
+    });
+
     it('should update the pool of available moves', () => {
       const levelAttempt = new LevelAttempt(Level.parse('-S-\n---\n---'));
       assertAvailableCells(levelAttempt, [
@@ -165,6 +176,22 @@ describe('Level attempt', () => {
         [true, false, true],
         [false, true, false],
       ]);
+    });
+
+    it('should leave allow Santa to occupy the square where there is a present', () => {
+      fail('implement me');
+    });
+
+    it('should replace Santa when uncovereing the Grinch (end game)', () => {
+      fail('implement me');
+    });
+
+    it('should flag the level as failed once the Grinch has been uncovered', () => {
+      fail('implement me');
+    });
+
+    it('should flag the level as complete when all presents have been uncovered', () => {
+      fail('implement me');
     });
   });
 

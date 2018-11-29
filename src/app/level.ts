@@ -78,6 +78,8 @@ export class LevelAttempt {
   private readonly cellSubject: BehaviorSubject<LevelAttemptCells>;
   readonly cells$: Observable<LevelAttemptCells>;
 
+  private moveCount = 0;
+
   constructor(private level: Level) {
     this.cellSubject = new BehaviorSubject(this.getInitialState());
     this.cells$ = this.cellSubject.asObservable();
@@ -88,6 +90,10 @@ export class LevelAttempt {
 
   get cells(): LevelAttemptCells {
     return this.cellSubject.getValue();
+  }
+
+  get moves(): number {
+    return this.moveCount;
   }
 
   move(row: number, column: number): void {
@@ -106,8 +112,8 @@ export class LevelAttempt {
           oldCell.cell === LevelCell.Santa
             ? LevelCell.Empty
             : isCurrentSantaCell
-            ? LevelCell.Santa
-            : oldCell.cell;
+              ? LevelCell.Santa
+              : oldCell.cell;
         return {
           cell: newCell,
           state: isCurrentSantaCell ? LevelAttemptState.Touched : oldCell.state,
@@ -115,6 +121,7 @@ export class LevelAttempt {
         };
       });
     });
+    this.moveCount++;
     this.cellSubject.next(newCells);
   }
 
