@@ -79,6 +79,9 @@ export class LevelAttempt {
   readonly cells$: Observable<LevelAttemptCells>;
 
   private moveCount = 0;
+  private readonly foundPresentsLocations = new Set<string>();
+  private _isFailed = false;
+  private readonly totalPresentCount: number;
 
   constructor(private level: Level) {
     this.cellSubject = new BehaviorSubject(this.getInitialState());
@@ -86,6 +89,7 @@ export class LevelAttempt {
 
     this.rows = this.level.cells.length;
     this.columns = this.level.cells[0].length;
+    this.totalPresentCount = this.level.cells.flat().filter(c => c === LevelCell.Present).length;
   }
 
   get cells(): LevelAttemptCells {
@@ -96,10 +100,38 @@ export class LevelAttempt {
     return this.moveCount;
   }
 
+  get foundPresents(): number {
+    return this.foundPresentsLocations.size;
+  }
+
+  get isFailed(): boolean {
+    return this._isFailed;
+  }
+
+  get isComplete(): boolean {
+    return this.foundPresents === this.totalPresentCount;
+  }
+
   move(row: number, column: number): void {
     const cell = this.getCellAtRowAndColumn(row, column);
     if (!cell.isAvailable) {
       throw new LevelMoveError(`Cannot move to cell (${row}, ${column}) - it is not available`);
+    }
+
+    if (this._isFailed) {
+      throw new LevelMoveError('Cannot move - the Grinch has been uncovered!');
+    }
+
+    if (this.isComplete) {
+      throw new LevelMoveError('Cannot move - all presents have been found!');
+    }
+
+    if (cell.cell === LevelCell.Grinch) {
+      this._isFailed = true;
+    }
+
+    if (cell.cell === LevelCell.Present) {
+      this.foundPresentsLocations.add(`${row},${column}`);
     }
 
     const santaLocation = { row, column };
@@ -107,16 +139,18 @@ export class LevelAttempt {
       return oldRow.map((oldCell, columnIndex) => {
         const cellLocation = { row: rowIndex, column: columnIndex };
         const isCurrentSantaCell = rowIndex === row && columnIndex === column;
-        // TODO: Refactor this disgrace!
-        const newCell =
-          oldCell.cell === LevelCell.Santa
-            ? LevelCell.Empty
-            : isCurrentSantaCell
-              ? LevelCell.Santa
-              : oldCell.cell;
+        let newState: LevelAttemptState;
+        if (isCurrentSantaCell) {
+          newState = LevelAttemptState.Santa;
+        } else if (oldCell.state === LevelAttemptState.Santa) {
+          newState = LevelAttemptState.Touched;
+        } else {
+          newState = oldCell.state;
+        }
+
         return {
-          cell: newCell,
-          state: isCurrentSantaCell ? LevelAttemptState.Touched : oldCell.state,
+          cell: oldCell.cell,
+          state: newState,
           isAvailable: this.isCellNextToSanta(cellLocation, santaLocation),
         };
       });
@@ -131,8 +165,8 @@ export class LevelAttempt {
       return row.map((cell, columnIndex) => {
         const cellLocation = { row: rowIndex, column: columnIndex };
         return {
-          cell,
-          state: cell === LevelCell.Santa ? LevelAttemptState.Touched : LevelAttemptState.Untouched,
+          cell: cell === LevelCell.Santa ? LevelCell.Empty : cell,
+          state: cell === LevelCell.Santa ? LevelAttemptState.Santa : LevelAttemptState.Untouched,
           isAvailable: this.isCellNextToSanta(cellLocation, santaLocation),
         };
       });

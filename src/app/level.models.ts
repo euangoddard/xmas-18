@@ -10,6 +10,7 @@ export type LevelCells = ReadonlyArray<ReadonlyArray<LevelCell>>;
 export const enum LevelAttemptState {
   Untouched,
   Touched,
+  Santa,
 }
 
 export interface LevelAttemptCell {

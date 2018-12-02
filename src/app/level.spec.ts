@@ -93,7 +93,7 @@ describe('Level attempt', () => {
     it('should position Santa as per the level', () => {
       const level = Level.parse('S');
       const levelAttempt = new LevelAttempt(level);
-      assertCellAttributes(levelAttempt.cells[0][0], LevelCell.Santa, LevelAttemptState.Touched);
+      assertCellAttributes(levelAttempt.cells[0][0], LevelCell.Empty, LevelAttemptState.Santa);
     });
 
     it('should mark all non-Santa-cells as untouched', () => {
@@ -145,14 +145,14 @@ describe('Level attempt', () => {
     });
 
     it('should updated the touched state of the cell that is being moved to', () => {
-      const levelAttempt = new LevelAttempt(Level.parse('S-'));
+      const levelAttempt = new LevelAttempt(Level.parse('SP'));
       levelAttempt.move(0, 1);
       assertCellAttributes(levelAttempt.cells[0][0], LevelCell.Empty, LevelAttemptState.Touched);
-      assertCellAttributes(levelAttempt.cells[0][1], LevelCell.Santa, LevelAttemptState.Touched);
+      assertCellAttributes(levelAttempt.cells[0][1], LevelCell.Present, LevelAttemptState.Santa);
     });
 
     it('should track the number of moves made on the level', () => {
-      const levelAttempt = new LevelAttempt(Level.parse('S---'));
+      const levelAttempt = new LevelAttempt(Level.parse('SPPP'));
       expect(levelAttempt.moves).toBe(0);
       levelAttempt.move(0, 1);
       expect(levelAttempt.moves).toBe(1);
@@ -163,7 +163,7 @@ describe('Level attempt', () => {
     });
 
     it('should update the pool of available moves', () => {
-      const levelAttempt = new LevelAttempt(Level.parse('-S-\n---\n---'));
+      const levelAttempt = new LevelAttempt(Level.parse('-S-\n-P-\n---'));
       assertAvailableCells(levelAttempt, [
         [true, false, true],
         [false, true, false],
@@ -178,20 +178,55 @@ describe('Level attempt', () => {
       ]);
     });
 
-    it('should leave allow Santa to occupy the square where there is a present', () => {
-      fail('implement me');
+    describe('The Grinch', () => {
+      it('should flag the level as failed once the Grinch has been uncovered', () => {
+        const levelAttempt = new LevelAttempt(Level.parse('SGP'));
+        expect(levelAttempt.isFailed).toBe(false);
+        levelAttempt.move(0, 1);
+        expect(levelAttempt.isFailed).toBe(true);
+      });
+
+      it('should disallow moves once the Grinch has been uncovered', () => {
+        const levelAttempt = new LevelAttempt(Level.parse('SGP'));
+        levelAttempt.move(0, 1);
+        expect(() => {
+          levelAttempt.move(0, 2);
+        }).toThrow(new LevelMoveError('Cannot move - the Grinch has been uncovered!'));
+      });
     });
 
-    it('should replace Santa when uncovereing the Grinch (end game)', () => {
-      fail('implement me');
-    });
+    describe('Presents', () => {
+      it('should flag the level as complete when all have been uncovered', () => {
+        const levelAttempt = new LevelAttempt(Level.parse('SPP'));
+        expect(levelAttempt.isComplete).toBe(false);
+        levelAttempt.move(0, 1);
+        expect(levelAttempt.isComplete).toBe(false);
+        levelAttempt.move(0, 2);
+        expect(levelAttempt.isComplete).toBe(true);
+      });
 
-    it('should flag the level as failed once the Grinch has been uncovered', () => {
-      fail('implement me');
-    });
+      it('should increment the count of found presents for each new one found', () => {
+        const levelAttempt = new LevelAttempt(Level.parse('SPPP'));
+        expect(levelAttempt.foundPresents).toBe(0);
+        levelAttempt.move(0, 1);
+        expect(levelAttempt.foundPresents).toBe(1);
+        levelAttempt.move(0, 2);
+        expect(levelAttempt.foundPresents).toBe(2);
+        levelAttempt.move(0, 1);
+        expect(levelAttempt.foundPresents).toBe(2);
+        levelAttempt.move(0, 2);
+        expect(levelAttempt.foundPresents).toBe(2);
+        levelAttempt.move(0, 3);
+        expect(levelAttempt.foundPresents).toBe(3);
+      });
 
-    it('should flag the level as complete when all presents have been uncovered', () => {
-      fail('implement me');
+      it('should disallow moves once all have been uncovered', () => {
+        const levelAttempt = new LevelAttempt(Level.parse('SP-'));
+        levelAttempt.move(0, 1);
+        expect(() => {
+          levelAttempt.move(0, 2);
+        }).toThrow(new LevelMoveError('Cannot move - all presents have been found!'));
+      });
     });
   });
 
