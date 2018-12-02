@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0 2rem;
+  margin: 2rem;
+}
+
+.page {
+  display: block;
+  max-width: 900px;
+  margin: 0 auto;
+}

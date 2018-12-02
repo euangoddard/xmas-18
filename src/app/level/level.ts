@@ -1,12 +1,12 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { LevelError, LevelMoveError } from 'src/app/level.errors';
+import { LevelError, LevelMoveError } from './level.errors';
 import {
   LevelAttemptCell,
   LevelAttemptCells,
   LevelAttemptState,
   LevelCell,
   LevelCells,
-} from 'src/app/level.models';
+} from './level.models';
 
 export class Level {
   constructor(public readonly cells: LevelCells) {

@@ -1,6 +1,6 @@
-import { Level, LevelAttempt } from 'src/app/level';
-import { LevelError, LevelMoveError } from 'src/app/level.errors';
-import { LevelAttemptCell, LevelAttemptState, LevelCell } from 'src/app/level.models';
+import { Level, LevelAttempt } from './level';
+import { LevelError, LevelMoveError } from './level.errors';
+import { LevelAttemptCell, LevelAttemptState, LevelCell } from './level.models';
 
 describe('Level', () => {
   describe('Sense checking', () => {
