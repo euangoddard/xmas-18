@@ -22,6 +22,7 @@
     "@angular/router": "~7.1.1",
     "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
+    "take-until-destroy": "^2.1.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

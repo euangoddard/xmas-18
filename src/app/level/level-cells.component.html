@@ -1,0 +1,15 @@
+<div class="cell-grid cell-grid__{{ rows }}-rows cell-grid__{{ columns }}-columns">
+  <ng-container *ngFor="let rowCells of cells">
+    <div
+      class="cell"
+      *ngFor="let cell of rowCells"
+      [class.cell--santa]="cell.state === LevelAttemptState.Santa"
+      [class.cell--untocuhed]="cell.state === LevelAttemptState.Untouched"
+      [class.cell--tocuhed]="cell.state === LevelAttemptState.Touched"
+      [class.cell--empty]="cell.cell === LevelCell.Empty"
+      [class.cell--present]="cell.cell === LevelCell.Present"
+      [class.cell--grinch]="cell.cell === LevelCell.Grinch"
+      [class.cell--available]="cell.isAvailable"
+    ></div>
+  </ng-container>
+</div>

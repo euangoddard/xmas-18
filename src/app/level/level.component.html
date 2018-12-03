@@ -1,3 +1,8 @@
-<p>
-  level works!
-</p>
+<section class="container with-title">
+  <h2 class="title">Level {{ levelNumber }}</h2>
+  <xmas-level-cells
+    [cells]="level.cells$ | async"
+    [rows]="level.rows"
+    [columns]="level.columns"
+  ></xmas-level-cells>
+</section>

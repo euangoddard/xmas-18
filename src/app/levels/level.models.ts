@@ -1,4 +1,4 @@
-export const enum LevelCell {
+export enum LevelCell {
   Empty,
   Santa,
   Present,
@@ -7,7 +7,7 @@ export const enum LevelCell {
 
 export type LevelCells = ReadonlyArray<ReadonlyArray<LevelCell>>;
 
-export const enum LevelAttemptState {
+export enum LevelAttemptState {
   Untouched,
   Touched,
   Santa,

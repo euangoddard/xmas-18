@@ -1,3 +1,3 @@
 import { Level } from './level';
 
-export const LEVELS: ReadonlyArray<Level> = [Level.parse('SP')];
+export const LEVELS: ReadonlyArray<Level> = [Level.parse('SP\nG-')];
