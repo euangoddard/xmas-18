@@ -4,5 +4,6 @@
     [cells]="level.cells$ | async"
     [rows]="level.rows"
     [columns]="level.columns"
+    (moved)="level.move($event.row, $event.column)"
   ></xmas-level-cells>
 </section>

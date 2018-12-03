@@ -19,21 +19,53 @@ body {
 .cell-grid {
   display: grid;
   grid-gap: 1rem;
+  margin: 0 auto;
 }
 
 $max-cells: 8;
+$cell-size: 6rem;
 
 @for $i from 1 through $max-cells {
   .cell-grid__#{$i}-rows {
-    grid-template-rows: repeat($i, 1fr);
+    grid-template-rows: repeat($i, $cell-size);
   }
   .cell-grid__#{$i}-columns {
-    grid-template-columns: repeat($i, 1fr);
+    grid-template-columns: repeat($i, $cell-size);
   }
 }
 
 .cell {
   border: 4px solid #212529;
   border-radius: 4px;
-  min-height: 10rem;
+}
+
+.cell--santa {
+  background: red;
+}
+
+.cell--present {
+  background: purple;
+}
+
+.cell--grinch {
+  background: green;
+}
+
+.cell--untouched {
+  background: #fff;
+}
+
+@keyframes available {
+  0%,
+  100% {
+    border-color: #212529;
+  }
+  50% {
+    border-color: pink;
+  }
+}
+
+.cell--available {
+  animation: available 2s ease-in-out infinite;
+  cursor: pointer;
 }
