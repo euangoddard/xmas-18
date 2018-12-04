@@ -16,26 +16,32 @@ describe('Level', () => {
 
     it('should ensure there is at least one Santa', () => {
       expect(() => {
-        new Level([[LevelCell.Empty, LevelCell.Empty], [LevelCell.Empty, LevelCell.Empty]]);
+        new Level([[LevelCell.Empty, LevelCell.Empty], [LevelCell.Empty, LevelCell.Present]]);
       }).toThrow(new LevelError('There can only be one Santa (found none)'));
     });
 
     it('should ensure there is at most one Santa', () => {
       expect(() => {
-        new Level([[LevelCell.Santa, LevelCell.Empty], [LevelCell.Empty, LevelCell.Santa]]);
+        new Level([[LevelCell.Santa, LevelCell.Present], [LevelCell.Empty, LevelCell.Santa]]);
       }).toThrow(new LevelError('There can only be one Santa (found 2)'));
+    });
+
+    it('should ensure there is at least one Present', () => {
+      expect(() => {
+        new Level([[LevelCell.Empty, LevelCell.Empty], [LevelCell.Empty, LevelCell.Santa]]);
+      }).toThrow(new LevelError('There must be at least one present'));
     });
 
     it('should ensure that rows are homogeneous', () => {
       expect(() => {
-        new Level([[LevelCell.Empty], [LevelCell.Empty, LevelCell.Santa]]);
+        new Level([[LevelCell.Empty], [LevelCell.Present, LevelCell.Santa]]);
       }).toThrow(new LevelError('All rows must contain the same number of columns'));
     });
 
     it('should cater for single row levels', () => {
       // Ensure homogeneity check does not fail here
       expect(() => {
-        new Level([[LevelCell.Santa]]);
+        new Level([[LevelCell.Santa, LevelCell.Present]]);
       }).not.toThrow();
     });
   });
@@ -67,7 +73,7 @@ describe('Level', () => {
     describe('Errors', () => {
       it('should throw an error if the symbol is not recognised', () => {
         expect(() => {
-          Level.parse('SXXX');
+          Level.parse('SPXXX');
         }).toThrow(new LevelError('Cannot parse symbol X!'));
       });
     });
@@ -77,13 +83,13 @@ describe('Level', () => {
 describe('Level attempt', () => {
   describe('Level sizing', () => {
     it('should reflect the rows of the underlying level', () => {
-      const level = Level.parse('S\n-');
+      const level = Level.parse('S\nP');
       const levelAttempt = new LevelAttempt(level);
       expect(levelAttempt.rows).toEqual(2);
     });
 
     it('should reflect the columns of the underlying level', () => {
-      const level = Level.parse('S-G');
+      const level = Level.parse('SPG');
       const levelAttempt = new LevelAttempt(level);
       expect(levelAttempt.columns).toEqual(3);
     });
@@ -91,7 +97,7 @@ describe('Level attempt', () => {
 
   describe('Initial state', () => {
     it('should position Santa as per the level', () => {
-      const level = Level.parse('S');
+      const level = Level.parse('SP');
       const levelAttempt = new LevelAttempt(level);
       assertCellAttributes(levelAttempt.cells[0][0], LevelCell.Empty, LevelAttemptState.Santa);
     });
@@ -108,37 +114,37 @@ describe('Level attempt', () => {
 
     describe('Available moves', () => {
       it('should allow moves to columns adjacent to Santa', () => {
-        const levelAttempt = new LevelAttempt(Level.parse('--S--'));
+        const levelAttempt = new LevelAttempt(Level.parse('P-S--'));
         assertAvailableCells(levelAttempt, [[false, true, false, true, false]]);
       });
 
       it('should allow moves to rows adjacent to Santa', () => {
-        const levelAttempt = new LevelAttempt(Level.parse('-\n-\nS\n-\n-'));
+        const levelAttempt = new LevelAttempt(Level.parse('P\n-\nS\n-\n-'));
         assertAvailableCells(levelAttempt, [[false], [true], [false], [true], [false]]);
       });
 
       it('should disallow moves to columns which would take the user off the grid', () => {
-        assertAvailableCells(new LevelAttempt(Level.parse('S-')), [[false, true]]);
-        assertAvailableCells(new LevelAttempt(Level.parse('-S')), [[true, false]]);
+        assertAvailableCells(new LevelAttempt(Level.parse('SP')), [[false, true]]);
+        assertAvailableCells(new LevelAttempt(Level.parse('PS')), [[true, false]]);
       });
 
       it('should disallow moves to rows which would take the user off the grid', () => {
-        assertAvailableCells(new LevelAttempt(Level.parse('S\n-')), [[false], [true]]);
-        assertAvailableCells(new LevelAttempt(Level.parse('-\nS')), [[true], [false]]);
+        assertAvailableCells(new LevelAttempt(Level.parse('S\nP')), [[false], [true]]);
+        assertAvailableCells(new LevelAttempt(Level.parse('P\nS')), [[true], [false]]);
       });
     });
   });
 
   describe('Moving to available cells', () => {
     it('should throw an error if the move is not available', () => {
-      const levelAttempt = new LevelAttempt(Level.parse('S-'));
+      const levelAttempt = new LevelAttempt(Level.parse('SP'));
       expect(() => {
         levelAttempt.move(0, 0);
       }).toThrow(new LevelMoveError('Cannot move to cell (0, 0) - it is not available'));
     });
 
     it('should throw an error if the move is illegal', () => {
-      const levelAttempt = new LevelAttempt(Level.parse('S-'));
+      const levelAttempt = new LevelAttempt(Level.parse('SP'));
       expect(() => {
         levelAttempt.move(2, 0);
       }).toThrow(new LevelMoveError('Cannot move to cell (2, 0) - it is not a valid cell'));

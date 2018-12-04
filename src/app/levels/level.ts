@@ -12,6 +12,7 @@ export class Level {
   constructor(public readonly cells: LevelCells) {
     this.assertNotEmpty();
     this.assertSingleSanta();
+    this.assertPresents();
     this.assertHomogeneousRows();
   }
 
@@ -29,14 +30,24 @@ export class Level {
     );
   }
 
+  private get cellsFlat(): ReadonlyArray<LevelCell> {
+    return this.cells.flat();
+  }
+
   private assertSingleSanta(): void {
-    const cellsFlat = this.cells.flat();
-    const santaCells = cellsFlat.filter(c => c === LevelCell.Santa);
+    const santaCells = this.cellsFlat.filter(c => c === LevelCell.Santa);
 
     if (santaCells.length === 0) {
       throw new LevelError('There can only be one Santa (found none)');
     } else if (santaCells.length !== 1) {
       throw new LevelError(`There can only be one Santa (found ${santaCells.length})`);
+    }
+  }
+
+  private assertPresents(): void {
+    const presentsCells = this.cellsFlat.filter(c => c === LevelCell.Present);
+    if (!presentsCells.length) {
+      throw new LevelError('There must be at least one present');
     }
   }
 
