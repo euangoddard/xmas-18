@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, EventEmitter, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  EventEmitter,
+  Output,
+  HostListener,
+} from '@angular/core';
 import { LevelAttemptCells, LevelAttemptState, LevelCell } from 'src/app/levels/level.models';
 
 @Component({
@@ -7,15 +14,41 @@ import { LevelAttemptCells, LevelAttemptState, LevelCell } from 'src/app/levels/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LevelCellsComponent {
-  @Input()
-  cells!: LevelAttemptCells;
-  @Input()
-  rows!: number;
-  @Input()
-  columns!: number;
-  @Output()
-  moved = new EventEmitter<{ row: number; column: number }>();
+  @Input() cells!: LevelAttemptCells;
+  @Input() rows!: number;
+  @Input() columns!: number;
+  @Input() disabled!: boolean;
+  @Output() moved = new EventEmitter<{ row: number; column: number }>();
 
   readonly LevelAttemptState = LevelAttemptState;
   readonly LevelCell = LevelCell;
+
+  makeMove(row: number, column: number, isAvailable: boolean): void {
+    if (this.disabled || !isAvailable) {
+      return;
+    }
+    this.moved.emit({ row, column });
+  }
+
+  @HostListener('window:keyup', ['$event.keyCode'])
+  moveWithKey(keyCode: number) {
+    switch (keyCode) {
+      case 38: // Up arrow
+        this.moveRelative(0, -1);
+        break;
+      case 40: // Down arrow
+        this.moveRelative(0, 1);
+        break;
+      case 37: // Left arrow
+        this.moveRelative(-1, 0);
+        break;
+      case 39: // Right arrow
+        this.moveRelative(1, 0);
+        break;
+    }
+  }
+
+  private moveRelative(dx: number, dy: number): void {
+    console.log(dx, dy);
+  }
 }

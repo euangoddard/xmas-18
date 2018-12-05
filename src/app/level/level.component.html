@@ -1,9 +1,18 @@
 <section class="container with-title">
   <h2 class="title">Level {{ levelNumber }}</h2>
+  <dl>
+    <dt>Presents:</dt>
+    <dd>{{ level.foundPresents }}</dd>
+    <dt>Moves:</dt>
+    <dd>{{ level.moves }}</dd>
+  </dl>
   <xmas-level-cells
     [cells]="level.cells$ | async"
     [rows]="level.rows"
     [columns]="level.columns"
+    [disabled]="level.isComplete || level.isFailed"
     (moved)="level.move($event.row, $event.column)"
   ></xmas-level-cells>
+  <p *ngIf="level.isComplete">You win!</p>
+  <p *ngIf="level.isFailed">You lose!</p>
 </section>

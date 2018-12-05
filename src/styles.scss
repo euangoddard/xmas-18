@@ -22,6 +22,10 @@ body {
   margin: 0 auto;
 }
 
+.cell-grid--disabled {
+  opacity: 0.4;
+}
+
 $max-cells: 8;
 $cell-size: 6rem;
 
@@ -68,4 +72,9 @@ $cell-size: 6rem;
 .cell--available {
   animation: available 2s ease-in-out infinite;
   cursor: pointer;
+
+  .cell-grid--disabled & {
+    animation: none;
+    cursor: default;
+  }
 }
