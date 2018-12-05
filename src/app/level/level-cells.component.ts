@@ -34,21 +34,38 @@ export class LevelCellsComponent {
   moveWithKey(keyCode: number) {
     switch (keyCode) {
       case 38: // Up arrow
-        this.moveRelative(0, -1);
-        break;
-      case 40: // Down arrow
-        this.moveRelative(0, 1);
-        break;
-      case 37: // Left arrow
         this.moveRelative(-1, 0);
         break;
-      case 39: // Right arrow
+      case 40: // Down arrow
         this.moveRelative(1, 0);
+        break;
+      case 37: // Left arrow
+        this.moveRelative(0, -1);
+        break;
+      case 39: // Right arrow
+        this.moveRelative(0, 1);
         break;
     }
   }
 
   private moveRelative(dx: number, dy: number): void {
-    console.log(dx, dy);
+    let activeRow = -1;
+    let activeColumn = -1;
+    this.cells.forEach((rowCells, rowIndex) => {
+      rowCells.forEach((cell, columnIndex) => {
+        if (cell.state === LevelAttemptState.Santa) {
+          activeRow = rowIndex;
+          activeColumn = columnIndex;
+        }
+      });
+    });
+    const newRow = activeRow + dx;
+    const newColumn = activeColumn + dy;
+    try {
+      const newCell = this.cells[newRow][newColumn];
+      if (newCell && newCell.isAvailable) {
+        this.makeMove(newRow, newColumn, true);
+      }
+    } catch {}
   }
 }
