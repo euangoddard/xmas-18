@@ -62,7 +62,13 @@ export class LevelComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   gotoLevel(levelNumber: number): void {
-    console.log('goto', levelNumber);
     this.router.navigate(['/level', levelNumber]);
+  }
+
+  reset(): void {
+    const attempt = this.levelsService.createAttempt(this.levelNumber - 1);
+    if (attempt) {
+      this.level = attempt;
+    }
   }
 }

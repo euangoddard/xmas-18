@@ -30,7 +30,7 @@
     >
       Previous level
     </button>
-    <button class="btn is-error" type="button">Reset</button>
+    <button class="btn is-error" type="button" (click)="reset()">Reset</button>
     <button class="btn" type="button" [disabled]="!hasNext" (click)="gotoLevel(levelNumber + 1)">
       Next level
     </button>
