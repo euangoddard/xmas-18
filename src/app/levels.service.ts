@@ -16,4 +16,12 @@ export class LevelsService {
       return null;
     }
   }
+
+  hasPrevious(levelNumber: number): boolean {
+    return levelNumber > 1;
+  }
+
+  hasNext(levelNumber: number): boolean {
+    return levelNumber < this.levels.length;
+  }
 }

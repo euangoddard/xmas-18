@@ -1,7 +1,8 @@
+import { LevelsService } from './../levels.service';
 import { HighScoreService } from './../high-score.service';
 import { SoundService } from './../sound.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Data, ParamMap } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { takeUntilDestroy } from 'take-until-destroy';
 import { LevelAttempt } from '../levels/level';
 import { Subscription } from 'rxjs';
@@ -15,13 +16,17 @@ import { LevelCell } from '../levels/level.models';
 export class LevelComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private soundService: SoundService,
     private highScoreService: HighScoreService,
+    private levelsService: LevelsService,
   ) {}
 
   level!: LevelAttempt;
   levelNumber!: number;
   highScore!: number | null;
+  hasNext!: boolean;
+  hasPrevious!: boolean;
   private santaCellSub: Subscription | null = null;
 
   ngOnInit() {
@@ -48,9 +53,16 @@ export class LevelComponent implements OnInit, OnDestroy {
     });
     this.route.paramMap.pipe(takeUntilDestroy(this)).subscribe((params: ParamMap) => {
       this.levelNumber = parseInt(params.get('number') || '0', 10);
+      this.hasNext = this.levelsService.hasNext(this.levelNumber);
+      this.hasPrevious = this.levelsService.hasPrevious(this.levelNumber);
       this.highScore = this.highScoreService.get(this.levelNumber);
     });
   }
 
   ngOnDestroy(): void {}
+
+  gotoLevel(levelNumber: number): void {
+    console.log('goto', levelNumber);
+    this.router.navigate(['/level', levelNumber]);
+  }
 }

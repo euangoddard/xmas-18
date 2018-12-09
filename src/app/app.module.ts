@@ -13,7 +13,11 @@ import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent, IntroComponent, LevelComponent, LevelCellsComponent],
-  imports: [BrowserModule, RouterModule.forRoot(ROUTES), ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(ROUTES),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+  ],
   providers: [
     {
       provide: Levels,
