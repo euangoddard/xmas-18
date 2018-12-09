@@ -1,0 +1,119 @@
+.container {
+  position: relative;
+  padding: 1.5rem 2rem;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  &::before,
+  &::after {
+    position: absolute;
+    z-index: -1;
+    content: "";
+  }
+
+  &::before {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  &::after {
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
+    border-color: $base-color;
+    border-style: solid;
+    border-width: 4px;
+    border-radius: 4px;
+  }
+
+  @mixin rounded($base, $background) {
+    border: none;
+    border-radius: 0;
+    // prettier-ignore
+    box-shadow:
+      0 -4px $background,
+      0 -8px $base,
+      4px 0 $background,
+      4px -4px $base,
+      8px 0 $base,
+      0 4px $background,
+      0 8px $base,
+      -4px 0 $background,
+      -4px 4px $base,
+      -8px 0 $base,
+      -4px -4px $base,
+      4px 4px $base;
+  }
+
+  &.is-rounded {
+    padding: 1rem 1.5rem;
+    margin: 14px 8px;
+
+    &::after {
+      @include rounded($base-color, $background-color);
+    }
+
+    &.is-dark {
+      &::after {
+        @include rounded($background-color, $base-color);
+      }
+
+      &::before {
+        top: -8px;
+        right: -8px;
+        bottom: -8px;
+        left: -8px;
+      }
+    }
+  }
+
+  &.with-title {
+    padding-top: 2rem;
+
+    > .title {
+      display: table;
+      padding: 0 0.5rem;
+      margin: -2rem 0 1rem;
+      font-size: 1rem;
+      background-color: $background-color;
+    }
+
+    &.is-center {
+      text-align: center;
+
+      > .title {
+        margin: -2rem auto 1rem;
+      }
+    }
+
+    &.is-right {
+      text-align: right;
+
+      > .title {
+        margin: -2rem 0 1rem auto;
+      }
+    }
+  }
+
+  &.is-dark {
+    &::before {
+      background-color: $base-color;
+    }
+
+    &::after {
+      border-color: #fff;
+    }
+
+    &.with-title {
+      > .title {
+        color: $background-color;
+        background-color: $base-color;
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+.radio {
+  // prettier-ignore
+  $radio: (
+    (1,1,0,0,0,0),
+    (1,1,1,1,0,0),
+    (1,1,1,1,1,0),
+    (1,1,1,1,1,1),
+    (1,1,1,1,1,0),
+    (1,1,1,1,0,0),
+    (1,1,0,0,0,0),
+  );
+  // prettier-ignore
+  $radio-checked-focus: (
+    (2,2,0,0,0,0),
+    (2,2,2,2,0,0),
+    (2,2,2,2,2,0),
+    (2,2,2,2,2,2),
+    (2,2,2,2,2,0),
+    (2,2,2,2,0,0),
+    (2,2,0,0,0,0),
+  );
+  $colors: ($base-color, #adafbc);
+
+  margin-right: 20px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  & + span {
+    position: relative;
+    cursor: pointer;
+  }
+
+  &:checked + span::before {
+    position: absolute;
+    top: -2px;
+    left: -20px;
+    content: "";
+
+    @include pixelize($radio, $colors, 2px);
+  }
+
+  &:checked:hover,
+  &:checked:focus {
+    & + span::before {
+      animation: blink 1s infinite steps(1);
+    }
+  }
+
+  &:checked:focus + span::before {
+    @include pixelize($radio-checked-focus, $colors, 2px);
+  }
+}

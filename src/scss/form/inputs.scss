@@ -1,0 +1,55 @@
+.input {
+  @mixin border-style($border, $outline) {
+    outline-color: $outline;
+    // prettier-ignore
+    box-shadow:
+      0 4px $border,
+      0 -4px $border,
+      4px 0 $border,
+      -4px 0 $border;
+  }
+
+  max-width: 100%;
+  padding: 0.5rem 1rem;
+  margin: 4px;
+  border: none;
+
+  @include border-style($base-color, #e7e7e7);
+
+  &.is-success {
+    @include border-style(#92cc41, #76c442);
+  }
+  &.is-warning {
+    @include border-style(#f7d51d, #f2c409);
+  }
+  &.is-error {
+    @include border-style(#e76e55, #ce372b);
+  }
+}
+
+.field {
+  > label {
+    display: block;
+  }
+  .input {
+    display: block;
+  }
+
+  &.is-inline {
+    display: flex;
+    align-items: center;
+
+    > label {
+      flex-basis: 0;
+      flex-grow: 1;
+      margin: 0;
+      margin-right: 1.5rem;
+      text-align: right;
+    }
+
+    .input {
+      flex-basis: 0;
+      flex-grow: 5;
+    }
+  }
+}
