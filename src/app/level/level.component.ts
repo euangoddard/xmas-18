@@ -1,3 +1,4 @@
+import { HighScoreService } from './../high-score.service';
 import { SoundService } from './../sound.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
@@ -12,10 +13,15 @@ import { LevelCell } from '../levels/level.models';
   styles: [],
 })
 export class LevelComponent implements OnInit, OnDestroy {
-  constructor(private route: ActivatedRoute, private soundService: SoundService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private soundService: SoundService,
+    private highScoreService: HighScoreService,
+  ) {}
 
   level!: LevelAttempt;
   levelNumber!: number;
+  highScore!: number | null;
   private santaCellSub: Subscription | null = null;
 
   ngOnInit() {
@@ -30,10 +36,19 @@ export class LevelComponent implements OnInit, OnDestroy {
         } else if (cell.cell === LevelCell.Grinch) {
           this.soundService.playSound('grinch');
         }
+
+        if (this.level.isComplete) {
+          if (this.highScore === null) {
+            this.highScoreService.set(this.levelNumber, this.level.moves);
+          } else if (this.level.moves < this.highScore) {
+            this.highScoreService.set(this.levelNumber, this.level.moves);
+          }
+        }
       });
     });
     this.route.paramMap.pipe(takeUntilDestroy(this)).subscribe((params: ParamMap) => {
       this.levelNumber = parseInt(params.get('number') || '0', 10);
+      this.highScore = this.highScoreService.get(this.levelNumber);
     });
   }
 

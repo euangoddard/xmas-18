@@ -5,6 +5,8 @@
     <dd>{{ level.foundPresents }}</dd>
     <dt>Moves:</dt>
     <dd>{{ level.moves }}</dd>
+    <dt>High score:</dt>
+    <dd>{{ highScore || '-' }}</dd>
   </dl>
   <xmas-level-cells
     [cells]="level.cells$ | async"
