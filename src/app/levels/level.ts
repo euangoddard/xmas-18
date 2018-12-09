@@ -6,6 +6,7 @@ import {
   LevelAttemptState,
   LevelCell,
   LevelCells,
+  LevelCoordinate,
 } from './level.models';
 
 export class Level {
@@ -89,6 +90,9 @@ export class LevelAttempt {
   private readonly cellSubject: BehaviorSubject<LevelAttemptCells>;
   readonly cells$: Observable<LevelAttemptCells>;
 
+  private readonly santaCellSubject: BehaviorSubject<LevelAttemptCell>;
+  readonly santaCell$: Observable<LevelAttemptCell>;
+
   private moveCount = 0;
   private readonly foundPresentsLocations = new Set<string>();
   private _isFailed = false;
@@ -98,6 +102,10 @@ export class LevelAttempt {
     this.cellSubject = new BehaviorSubject(this.getInitialState());
     this.cells$ = this.cellSubject.asObservable();
 
+    const { row, column } = this.getInitialSantaLocation();
+    this.santaCellSubject = new BehaviorSubject(this.cells[row][column]);
+    this.santaCell$ = this.santaCellSubject.asObservable();
+
     this.rows = this.level.cells.length;
     this.columns = this.level.cells[0].length;
     this.totalPresentCount = this.level.cells.flat().filter(c => c === LevelCell.Present).length;
@@ -105,6 +113,10 @@ export class LevelAttempt {
 
   get cells(): LevelAttemptCells {
     return this.cellSubject.getValue();
+  }
+
+  get santaCell(): LevelAttemptCell {
+    return this.santaCellSubject.getValue();
   }
 
   get moves(): number {
@@ -168,6 +180,7 @@ export class LevelAttempt {
     });
     this.moveCount++;
     this.cellSubject.next(newCells);
+    this.santaCellSubject.next(newCells[santaLocation.row][santaLocation.column]);
   }
 
   private getInitialState(): LevelAttemptCells {

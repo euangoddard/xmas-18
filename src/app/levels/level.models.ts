@@ -20,3 +20,8 @@ export interface LevelAttemptCell {
 }
 
 export type LevelAttemptCells = ReadonlyArray<ReadonlyArray<LevelAttemptCell>>;
+
+export interface LevelCoordinate {
+  row: number;
+  column: number;
+}

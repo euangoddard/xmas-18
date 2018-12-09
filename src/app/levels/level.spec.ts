@@ -112,6 +112,16 @@ describe('Level attempt', () => {
       assertCellAttributes(cells[1][1], LevelCell.Present, LevelAttemptState.Untouched);
     });
 
+    it('should expose the cell with Santa', () => {
+      const level = Level.parse('S-\nGP');
+      const levelAttempt = new LevelAttempt(level);
+      expect(levelAttempt.santaCell).toEqual({
+        cell: LevelCell.Empty,
+        state: LevelAttemptState.Santa,
+        isAvailable: false,
+      });
+    });
+
     describe('Available moves', () => {
       it('should allow moves to columns adjacent to Santa', () => {
         const levelAttempt = new LevelAttempt(Level.parse('P-S--'));
@@ -155,6 +165,16 @@ describe('Level attempt', () => {
       levelAttempt.move(0, 1);
       assertCellAttributes(levelAttempt.cells[0][0], LevelCell.Empty, LevelAttemptState.Touched);
       assertCellAttributes(levelAttempt.cells[0][1], LevelCell.Present, LevelAttemptState.Santa);
+    });
+
+    it('should update the location of Santa', () => {
+      const levelAttempt = new LevelAttempt(Level.parse('SP'));
+      levelAttempt.move(0, 1);
+      expect(levelAttempt.santaCell).toEqual({
+        cell: LevelCell.Present,
+        state: LevelAttemptState.Santa,
+        isAvailable: false,
+      });
     });
 
     it('should track the number of moves made on the level', () => {

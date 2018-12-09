@@ -6,7 +6,12 @@ import {
   Output,
   HostListener,
 } from '@angular/core';
-import { LevelAttemptCells, LevelAttemptState, LevelCell } from 'src/app/levels/level.models';
+import {
+  LevelAttemptCells,
+  LevelAttemptState,
+  LevelCell,
+  LevelCoordinate,
+} from 'src/app/levels/level.models';
 
 @Component({
   selector: 'xmas-level-cells',
@@ -18,7 +23,7 @@ export class LevelCellsComponent {
   @Input() rows!: number;
   @Input() columns!: number;
   @Input() disabled!: boolean;
-  @Output() moved = new EventEmitter<{ row: number; column: number }>();
+  @Output() moved = new EventEmitter<LevelCoordinate>();
 
   readonly LevelAttemptState = LevelAttemptState;
   readonly LevelCell = LevelCell;
