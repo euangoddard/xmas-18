@@ -17,6 +17,7 @@ export interface LevelAttemptCell {
   cell: LevelCell;
   state: LevelAttemptState;
   isAvailable: boolean;
+  touchCount: number;
 }
 
 export type LevelAttemptCells = ReadonlyArray<ReadonlyArray<LevelAttemptCell>>;

@@ -175,6 +175,7 @@ export class LevelAttempt {
           cell: oldCell.cell,
           state: newState,
           isAvailable: this.isCellNextToSanta(cellLocation, santaLocation),
+          touchCount: isCurrentSantaCell ? oldCell.touchCount + 1 : oldCell.touchCount,
         };
       });
     });
@@ -192,6 +193,7 @@ export class LevelAttempt {
           cell: cell === LevelCell.Santa ? LevelCell.Empty : cell,
           state: cell === LevelCell.Santa ? LevelAttemptState.Santa : LevelAttemptState.Untouched,
           isAvailable: this.isCellNextToSanta(cellLocation, santaLocation),
+          touchCount: cell === LevelCell.Santa ? 1 : 0,
         };
       });
     });

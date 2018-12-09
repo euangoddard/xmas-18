@@ -25,7 +25,7 @@ export class LevelComponent implements OnInit, OnDestroy {
         this.santaCellSub.unsubscribe();
       }
       this.santaCellSub = this.level.santaCell$.subscribe(cell => {
-        if (cell.cell === LevelCell.Present) {
+        if (cell.cell === LevelCell.Present && cell.touchCount < 2) {
           this.soundService.playSound('present');
         } else if (cell.cell === LevelCell.Grinch) {
           this.soundService.playSound('grinch');

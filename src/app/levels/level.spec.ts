@@ -112,6 +112,13 @@ describe('Level attempt', () => {
       assertCellAttributes(cells[1][1], LevelCell.Present, LevelAttemptState.Untouched);
     });
 
+    it('should mark all cells as being touched appropraitely', () => {
+      const level = Level.parse('SP');
+      const levelAttempt = new LevelAttempt(level);
+      assertTouchCount(levelAttempt, 0, 0, 1);
+      assertTouchCount(levelAttempt, 0, 1, 0);
+    });
+
     it('should expose the cell with Santa', () => {
       const level = Level.parse('S-\nGP');
       const levelAttempt = new LevelAttempt(level);
@@ -119,6 +126,7 @@ describe('Level attempt', () => {
         cell: LevelCell.Empty,
         state: LevelAttemptState.Santa,
         isAvailable: false,
+        touchCount: 1,
       });
     });
 
@@ -167,13 +175,14 @@ describe('Level attempt', () => {
       assertCellAttributes(levelAttempt.cells[0][1], LevelCell.Present, LevelAttemptState.Santa);
     });
 
-    it('should update the location of Santa', () => {
+    it('should update the current Santa cell', () => {
       const levelAttempt = new LevelAttempt(Level.parse('SP'));
       levelAttempt.move(0, 1);
       expect(levelAttempt.santaCell).toEqual({
         cell: LevelCell.Present,
         state: LevelAttemptState.Santa,
         isAvailable: false,
+        touchCount: 1,
       });
     });
 
@@ -186,6 +195,31 @@ describe('Level attempt', () => {
       expect(levelAttempt.moves).toBe(2);
       levelAttempt.move(0, 1);
       expect(levelAttempt.moves).toBe(3);
+    });
+
+    it('should update touch counts', () => {
+      const level = Level.parse('S-P');
+      const levelAttempt = new LevelAttempt(level);
+
+      levelAttempt.move(0, 1);
+      assertTouchCount(levelAttempt, 0, 0, 1);
+      assertTouchCount(levelAttempt, 0, 1, 1);
+      assertTouchCount(levelAttempt, 0, 2, 0);
+
+      levelAttempt.move(0, 0);
+      assertTouchCount(levelAttempt, 0, 0, 2);
+      assertTouchCount(levelAttempt, 0, 1, 1);
+      assertTouchCount(levelAttempt, 0, 2, 0);
+
+      levelAttempt.move(0, 1);
+      assertTouchCount(levelAttempt, 0, 0, 2);
+      assertTouchCount(levelAttempt, 0, 1, 2);
+      assertTouchCount(levelAttempt, 0, 2, 0);
+
+      levelAttempt.move(0, 2);
+      assertTouchCount(levelAttempt, 0, 0, 2);
+      assertTouchCount(levelAttempt, 0, 1, 2);
+      assertTouchCount(levelAttempt, 0, 2, 1);
     });
 
     it('should update the pool of available moves', () => {
@@ -285,5 +319,14 @@ describe('Level attempt', () => {
         );
       }
     }
+  }
+
+  function assertTouchCount(
+    levelAttempt: LevelAttempt,
+    row: number,
+    column: number,
+    expectedCount: number,
+  ): void {
+    expect(levelAttempt.cells[row][column].touchCount).toBe(expectedCount);
   }
 });
