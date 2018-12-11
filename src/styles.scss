@@ -24,6 +24,13 @@ body {
   }
 }
 
+.loading-image {
+  width: 12rem;
+  height: 12rem;
+  display:block;
+  margin: 2rem auto;
+}
+
 .container:not(:last-child) {
   margin-bottom: 1rem;
 }
