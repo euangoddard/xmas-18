@@ -9,13 +9,19 @@
 @import 'scss/elements/containers';
 @import 'scss/elements/buttons';
 
+@import 'scss/mixins';
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  padding: 0 2rem;
+  padding: 0;
   margin: 2rem;
+
+  @include large-screen {
+    padding: 0 2rem;
+  }
 }
 
 .container:not(:last-child) {
@@ -33,7 +39,10 @@ body {
 
 .cell-grid {
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
+  @include large-screen {
+    grid-gap: 1rem;
+  }
   margin: 0 auto;
 }
 
@@ -42,32 +51,51 @@ body {
 }
 
 $max-cells: 8;
-$cell-size: 6rem;
+$cell-size-small: 3rem;
+$cell-size-large: 6rem;
 
 @for $i from 1 through $max-cells {
   .cell-grid__#{$i}-rows {
-    grid-template-rows: repeat($i, $cell-size);
+    grid-template-rows: repeat($i, $cell-size-small);
+
+    @include large-screen {
+      grid-template-rows: repeat($i, $cell-size-large);
+    }
   }
   .cell-grid__#{$i}-columns {
-    grid-template-columns: repeat($i, $cell-size);
+    grid-template-columns: repeat($i, $cell-size-small);
+
+    @include large-screen {
+      grid-template-columns: repeat($i, $cell-size-large);
+    }
   }
 }
 
 .cell {
-  border: 4px solid #212529;
+  border: 4px solid $color-black;
   border-radius: 4px;
+  background: no-repeat center;
+  background-size: 2rem;
+
+  @include large-screen {
+    background-size: 4rem;
+  }
+}
+
+.cell--empty {
+  background-color: $color-3D;
 }
 
 .cell--santa {
-  background: red;
+  background-image: url('/assets/images/santa.svg');
 }
 
 .cell--present {
-  background: purple;
+  background-image: url('/assets/images/present.svg');
 }
 
 .cell--grinch {
-  background: green;
+  background-image: url('/assets/images/grinch.svg');
 }
 
 .cell--untouched {
@@ -77,10 +105,10 @@ $cell-size: 6rem;
 @keyframes available {
   0%,
   100% {
-    border-color: #212529;
+    border-color: $color-black;
   }
   50% {
-    border-color: pink;
+    border-color: $color-29;
   }
 }
 
