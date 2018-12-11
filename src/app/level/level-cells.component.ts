@@ -39,15 +39,19 @@ export class LevelCellsComponent {
   moveWithKey(keyCode: number) {
     switch (keyCode) {
       case 38: // Up arrow
+      case 33:
         this.moveRelative(-1, 0);
         break;
       case 40: // Down arrow
+      case 34:
         this.moveRelative(1, 0);
         break;
       case 37: // Left arrow
+      case 36:
         this.moveRelative(0, -1);
         break;
       case 39: // Right arrow
+      case 35:
         this.moveRelative(0, 1);
         break;
     }
