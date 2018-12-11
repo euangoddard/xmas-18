@@ -1,6 +1,6 @@
 @mixin pixelize($matrix, $colors, $size) {
-  $ret: "";
-  $moz: "";
+  $ret: '';
+  $moz: '';
 
   @for $i from 1 through length($matrix) {
     $row: nth($matrix, $i);
@@ -9,14 +9,14 @@
       $dot: nth($row, $j);
 
       @if $dot != 0 {
-        @if $ret != "" {
-          $ret: $ret + ",";
-          $moz: $moz + ",";
+        @if $ret != '' {
+          $ret: $ret + ',';
+          $moz: $moz + ',';
         }
 
         $color: nth($colors, $dot);
-        $ret: $ret + ($j * $size) + " " + ($i * $size) + " " + $color;
-        $moz: $moz + ($j * $size)+" "+ ($i * $size)+" 0 0.020em " + $color;
+        $ret: $ret + ($j * $size) + ' ' + ($i * $size) + ' ' + $color;
+        $moz: $moz + ($j * $size)+' '+ ($i * $size)+' 0 0.020em ' + $color;
       }
     }
   }
