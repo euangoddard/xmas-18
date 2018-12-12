@@ -1,5 +1,6 @@
-<div *ngIf="isNewVersionAvailable$ | async" class="container with-title">
-  <h2 class="title">A new version is available</h2>
+<div *ngIf="(isNewVersionAvailable$ | async)" class="container with-title">
+  <h2 class="title">Updated!</h2>
+  <p>A new version and/pr levels is available. Please reload to view</p>
   <button class="btn is-success" type="button" (click)="reload()">Reload</button>
 </div>
 <h1>2018 xmas card</h1>

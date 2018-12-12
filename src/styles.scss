@@ -24,6 +24,10 @@ body {
   }
 }
 
+.align-middle {
+  vertical-align: baseline;
+}
+
 .loading-image {
   width: 12rem;
   height: 12rem;
@@ -44,11 +48,14 @@ body {
 // TODO: Consider splitting out into another file
 // Cell grid
 
+$cell-gap-small: 0.5rem;
+$cell-gap-large: 1rem;
+
 .cell-grid {
   display: grid;
-  grid-gap: 0.5rem;
+  grid-gap: $cell-gap-small;
   @include large-screen {
-    grid-gap: 1rem;
+    grid-gap: $cell-gap-large;
   }
 }
 
@@ -56,7 +63,7 @@ body {
   opacity: 0.4;
 }
 
-$max-cells: 8;
+$max-cells: 5;
 $cell-size-small: 3rem;
 $cell-size-large: 6rem;
 
@@ -107,7 +114,7 @@ $cell-size-large: 6rem;
   }
 }
 
-.cell--grinch {
+.cell--grinch:not(.cell--untouched) {
   background-image: url('/assets/images/grinch.svg');
   background-color: #ea795f;
   border-color: #92311a;
@@ -137,6 +144,23 @@ $cell-size-large: 6rem;
   }
 }
 
+dl {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+dt {
+  clear: left;
+  float: left;
+}
+
+dd {
+  float: left;
+}
+
 dd {
   color: $color-2D;
 }
@@ -164,7 +188,7 @@ dd {
 
 %state-text {
   animation: blink 1s infinite steps(1);
-  text-align:center;
+  text-align: center;
   margin-top: 1rem;
 }
 
