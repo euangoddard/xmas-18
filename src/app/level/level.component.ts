@@ -11,7 +11,6 @@ import { LevelCell } from '../levels/level.models';
 @Component({
   selector: 'xmas-level',
   templateUrl: './level.component.html',
-  styles: [],
 })
 export class LevelComponent implements OnInit, OnDestroy {
   constructor(
@@ -43,10 +42,10 @@ export class LevelComponent implements OnInit, OnDestroy {
         }
 
         if (this.level.isComplete) {
-          if (this.highScore === null) {
+          if (this.highScore === null || this.level.moves < this.highScore) {
             this.highScoreService.set(this.levelNumber, this.level.moves);
-          } else if (this.level.moves < this.highScore) {
-            this.highScoreService.set(this.levelNumber, this.level.moves);
+            console.log('updating high score');
+            this.highScore = this.level.moves;
           }
         }
       });
