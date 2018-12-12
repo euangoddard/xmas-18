@@ -27,7 +27,7 @@ body {
 .loading-image {
   width: 12rem;
   height: 12rem;
-  display:block;
+  display: block;
   margin: 2rem auto;
 }
 
@@ -50,7 +50,6 @@ body {
   @include large-screen {
     grid-gap: 1rem;
   }
-  margin: 0 auto;
 }
 
 .cell-grid--disabled {
@@ -89,8 +88,9 @@ $cell-size-large: 6rem;
   }
 }
 
-.cell--empty {
-  background-color: $color-3D;
+.cell--touched,
+.cell--santa {
+  background-color: #05cd94;
 }
 
 .cell--santa {
@@ -99,10 +99,18 @@ $cell-size-large: 6rem;
 
 .cell--present {
   background-image: url('/assets/images/present.svg');
+
+  &.cell--santa {
+    background-position: top left, bottom right;
+    background-image: url('/assets/images/santa.svg'), url('/assets/images/present.svg');
+    background-size: 50%, 50%;
+  }
 }
 
 .cell--grinch {
   background-image: url('/assets/images/grinch.svg');
+  background-color: #ea795f;
+  border-color: #92311a;
 }
 
 .cell--untouched {
@@ -115,16 +123,74 @@ $cell-size-large: 6rem;
     border-color: $color-black;
   }
   50% {
-    border-color: $color-29;
+    border-color: #00f5af;
   }
 }
 
 .cell--available {
-  animation: available 2s ease-in-out infinite;
+  animation: 1s cubic-bezier(0.75, 0, 0.55, 1) infinite available;
   cursor: pointer;
 
   .cell-grid--disabled & {
     animation: none;
     cursor: default;
+  }
+}
+
+dd {
+  color: $color-2D;
+}
+
+@include large-screen {
+  dl {
+    display: flex;
+    justify-content: center;
+  }
+
+  dd {
+    margin-right: 1.5rem;
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+%state-text {
+  animation: blink 1s infinite steps(1);
+  text-align:center;
+  margin-top: 1rem;
+}
+
+.text-win {
+  @extend %state-text;
+  color: $color-2A;
+}
+
+.text-lose {
+  @extend %state-text;
+  color: $color-15;
+}
+
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btns {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  @include large-screen {
+    flex-direction: row;
+    justify-content: center;
   }
 }

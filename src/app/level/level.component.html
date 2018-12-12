@@ -15,24 +15,25 @@
     [disabled]="level.isComplete || level.isFailed"
     (moved)="level.move($event.row, $event.column)"
   ></xmas-level-cells>
-  <p *ngIf="level.isComplete">You win!</p>
-  <p *ngIf="level.isFailed">You lose!</p>
+  <h1 *ngIf="level.isComplete" class="text-win">You win!</h1>
+  <h1 *ngIf="level.isFailed" class="text-lose">You lose!</h1>
 </section>
 
 <section class="container with-title">
   <h2 class="title">Actions</h2>
-  <nav>
+  <nav class="btns">
     <button
       class="btn"
       type="button"
       [disabled]="!hasPrevious"
       (click)="gotoLevel(levelNumber - 1)"
     >
-      Previous level
+      &lt; level
     </button>
+    <a routerLink="/" class="btn is-success">Home</a>
     <button class="btn is-error" type="button" (click)="reset()">Reset</button>
     <button class="btn" type="button" [disabled]="!hasNext" (click)="gotoLevel(levelNumber + 1)">
-      Next level
+      level &gt;
     </button>
   </nav>
 </section>
