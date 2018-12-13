@@ -1,12 +1,13 @@
-import { LevelsService } from './../levels.service';
-import { HighScoreService } from './../high-score.service';
-import { SoundService } from './../sound.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
+import { ReplaySubject } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroy } from 'take-until-destroy';
 import { LevelAttempt } from '../levels/level';
-import { Subscription } from 'rxjs';
-import { LevelCell } from '../levels/level.models';
+import { LevelAttemptCell, LevelCell } from '../levels/level.models';
+import { HighScoreService } from './../high-score.service';
+import { LevelsService } from './../levels.service';
+import { SoundService } from './../sound.service';
 
 @Component({
   selector: 'xmas-level',
@@ -26,15 +27,21 @@ export class LevelComponent implements OnInit, OnDestroy {
   highScore!: number | null;
   hasNext!: boolean;
   hasPrevious!: boolean;
-  private santaCellSub: Subscription | null = null;
+
+  private levelSubject = new ReplaySubject<LevelAttempt>(1);
 
   ngOnInit() {
     this.route.data.pipe(takeUntilDestroy(this)).subscribe((data: Data) => {
-      this.level = data['level'];
-      if (this.santaCellSub) {
-        this.santaCellSub.unsubscribe();
-      }
-      this.santaCellSub = this.level.santaCell$.subscribe(cell => {
+      this.levelSubject.next(data['level']);
+    });
+
+    this.levelSubject
+      .pipe(
+        tap(level => (this.level = level)),
+        switchMap<LevelAttempt, LevelAttemptCell>(level => level.santaCell$),
+        takeUntilDestroy(this),
+      )
+      .subscribe(cell => {
         if (cell.cell === LevelCell.Present && cell.touchCount < 2) {
           this.soundService.playSound('present');
         } else if (cell.cell === LevelCell.Grinch) {
@@ -44,12 +51,10 @@ export class LevelComponent implements OnInit, OnDestroy {
         if (this.level.isComplete) {
           if (this.highScore === null || this.level.moves < this.highScore) {
             this.highScoreService.set(this.levelNumber, this.level.moves);
-            console.log('updating high score');
             this.highScore = this.level.moves;
           }
         }
       });
-    });
     this.route.paramMap.pipe(takeUntilDestroy(this)).subscribe((params: ParamMap) => {
       this.levelNumber = parseInt(params.get('number') || '0', 10);
       this.hasNext = this.levelsService.hasNext(this.levelNumber);
@@ -67,7 +72,7 @@ export class LevelComponent implements OnInit, OnDestroy {
   reset(): void {
     const attempt = this.levelsService.createAttempt(this.levelNumber - 1);
     if (attempt) {
-      this.level = attempt;
+      this.levelSubject.next(attempt);
     }
   }
 }
