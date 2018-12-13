@@ -57,6 +57,7 @@ $cell-gap-large: 1rem;
   @include large-screen {
     grid-gap: $cell-gap-large;
   }
+  margin: 0 auto;
 }
 
 .cell-grid--disabled {
@@ -76,9 +77,11 @@ $cell-size-large: 6rem;
     }
   }
   .cell-grid__#{$i}-columns {
+    width: $i * ($cell-size-small + $cell-gap-small) - $cell-gap-small;
     grid-template-columns: repeat($i, $cell-size-small);
 
     @include large-screen {
+      width: $i * ($cell-size-large + $cell-gap-large) - $cell-gap-large;
       grid-template-columns: repeat($i, $cell-size-large);
     }
   }
