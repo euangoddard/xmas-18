@@ -18,7 +18,11 @@ export class AnalyticsService {
   }
 
   sendPageView(urlPath: string): void {
-    this.gtag('config', 'UA-131047329-1', { page_path: urlPath });
+    this.gtag('config', 'UA-131047329-1', {
+      page_path: urlPath,
+      page_title: document.title,
+      page_location: window.location.href,
+    });
   }
 
   private gtag(...args: any[]): void {
