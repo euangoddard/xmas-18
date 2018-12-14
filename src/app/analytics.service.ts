@@ -25,6 +25,10 @@ export class AnalyticsService {
     });
   }
 
+  sendEvent(action: string, params: GtagEvent): void {
+    this.gtag('event', action, params);
+  }
+
   private gtag(...args: any[]): void {
     window.dataLayer!.push(args);
   }
@@ -37,4 +41,11 @@ export class AnalyticsService {
     const first = document.getElementsByTagName('script')[0]!;
     first.parentNode!.insertBefore(script, first);
   }
+}
+
+export interface GtagEvent {
+  event_category?: string;
+  event_label?: string;
+  value?: any;
+  [key: string]: any;
 }

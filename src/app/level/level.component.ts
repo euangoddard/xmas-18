@@ -1,3 +1,4 @@
+import { AnalyticsService } from './../analytics.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -20,6 +21,7 @@ export class LevelComponent implements OnInit, OnDestroy {
     private soundService: SoundService,
     private highScoreService: HighScoreService,
     private levelsService: LevelsService,
+    private analytics: AnalyticsService,
   ) {}
 
   level!: LevelAttempt;
@@ -37,7 +39,9 @@ export class LevelComponent implements OnInit, OnDestroy {
 
     this.levelSubject
       .pipe(
-        tap(level => (this.level = level)),
+        tap(level => {
+          this.level = level;
+        }),
         switchMap<LevelAttempt, LevelAttemptCell>(level => level.santaCell$),
         takeUntilDestroy(this),
       )
@@ -46,9 +50,17 @@ export class LevelComponent implements OnInit, OnDestroy {
           this.soundService.playSound('present');
         } else if (cell.cell === LevelCell.Grinch) {
           this.soundService.playSound('grinch');
+          this.analytics.sendEvent('Lost level', {
+            event_category: 'Game',
+            value: this.levelNumber,
+          });
         }
 
         if (this.level.isComplete) {
+          this.analytics.sendEvent('Won level', {
+            event_category: 'Game',
+            value: this.levelNumber,
+          });
           if (this.highScore === null || this.level.moves < this.highScore) {
             this.highScoreService.set(this.levelNumber, this.level.moves);
             this.highScore = this.level.moves;
@@ -57,6 +69,10 @@ export class LevelComponent implements OnInit, OnDestroy {
       });
     this.route.paramMap.pipe(takeUntilDestroy(this)).subscribe((params: ParamMap) => {
       this.levelNumber = parseInt(params.get('number') || '0', 10);
+      this.analytics.sendEvent('Start level', {
+        event_category: 'Game',
+        value: this.levelNumber,
+      });
       this.hasNext = this.levelsService.hasNext(this.levelNumber);
       this.hasPrevious = this.levelsService.hasPrevious(this.levelNumber);
       this.highScore = this.highScoreService.get(this.levelNumber);
