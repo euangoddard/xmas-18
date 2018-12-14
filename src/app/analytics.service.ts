@@ -11,6 +11,7 @@ declare global {
 })
 export class AnalyticsService {
   constructor() {
+    this.addScript();
     window.dataLayer = window.dataLayer || [];
     this.gtag('js', new Date());
     this.gtag('config', 'UA-131047329-1', { send_page_view: false });
