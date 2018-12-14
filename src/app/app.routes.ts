@@ -15,4 +15,5 @@ export const ROUTES: Route[] = [
       level: LevelResolve,
     },
   },
+  { path: '**', redirectTo: '/' },
 ];
