@@ -35,12 +35,25 @@ export class SoundService {
     if (this.cache.has(sound)) {
       return Promise.resolve(this.cache.get(sound)!);
     } else {
-      const response = await fetch(`${SoundService.SOUNDS_ROOT}${sound}.mp3`);
-      const arrayBuffer = await response.arrayBuffer();
+      const arrayBuffer = await this.fetchSound(sound);
       const audioBuffer = await this.decodeArrayBuffer(arrayBuffer);
       this.cache.set(sound, audioBuffer);
       return audioBuffer;
     }
+  }
+
+  private async fetchSound(sound: string): Promise<ArrayBuffer> {
+    const request = new XMLHttpRequest();
+    request.open('GET', `${SoundService.SOUNDS_ROOT}${sound}.mp3`, true);
+    request.responseType = 'arraybuffer';
+    const promise = new Promise<ArrayBuffer>((resolve, reject) => {
+      request.onload = () => {
+        resolve(request.response);
+      };
+      request.onerror = err => reject(err);
+    });
+    request.send();
+    return promise;
   }
 
   private async decodeArrayBuffer(arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
