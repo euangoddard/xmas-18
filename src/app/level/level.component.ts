@@ -1,5 +1,5 @@
 import { AnalyticsService } from './../analytics.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { SoundService } from './../sound.service';
 @Component({
   selector: 'xmas-level',
   templateUrl: './level.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LevelComponent implements OnInit, OnDestroy {
   constructor(
