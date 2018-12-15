@@ -89,7 +89,7 @@ $cell-size-large: 6rem;
 
 xmas-level-cells {
   display: block;
-  overflow-x:auto;
+  overflow-x: auto;
 }
 
 .cell {
@@ -225,4 +225,8 @@ dd {
     flex-direction: row;
     justify-content: center;
   }
+}
+
+a.btn {
+  text-decoration: none;
 }
