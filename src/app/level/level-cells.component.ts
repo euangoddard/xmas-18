@@ -1,10 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   EventEmitter,
-  Output,
   HostListener,
+  Input,
+  Output,
 } from '@angular/core';
 import {
   LevelAttemptCells,

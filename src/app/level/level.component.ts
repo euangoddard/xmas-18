@@ -1,11 +1,13 @@
-import { AnalyticsService } from './../analytics.service';
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroy } from 'take-until-destroy';
+import { APP_TITLE } from '../app.title';
 import { LevelAttempt } from '../levels/level';
 import { LevelAttemptCell, LevelCell } from '../levels/level.models';
+import { AnalyticsService } from './../analytics.service';
 import { HighScoreService } from './../high-score.service';
 import { LevelsService } from './../levels.service';
 import { SoundService } from './../sound.service';
@@ -23,6 +25,7 @@ export class LevelComponent implements OnInit, OnDestroy {
     private highScoreService: HighScoreService,
     private levelsService: LevelsService,
     private analytics: AnalyticsService,
+    private title: Title,
   ) {}
 
   level!: LevelAttempt;
@@ -70,6 +73,7 @@ export class LevelComponent implements OnInit, OnDestroy {
       });
     this.route.paramMap.pipe(takeUntilDestroy(this)).subscribe((params: ParamMap) => {
       this.levelNumber = parseInt(params.get('number') || '0', 10);
+      this.title.setTitle(`${APP_TITLE} – Level ${this.levelNumber}`);
       this.analytics.sendEvent('Start level', {
         event_category: 'Game',
         value: this.levelNumber,
