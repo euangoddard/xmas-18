@@ -1,10 +1,11 @@
-import { LevelsService } from './levels.service';
-import { AnalyticsService } from './analytics.service';
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable, of } from 'rxjs';
-import { mapTo, startWith, filter } from 'rxjs/operators';
-import { Router, NavigationEnd } from '@angular/router';
+import { filter, mapTo, startWith } from 'rxjs/operators';
+import { AnalyticsService } from './analytics.service';
+import { LevelsService } from './levels.service';
+import { SoundService, Sound } from './sound.service';
 
 const KONAMI_PATTERN: ReadonlyArray<number> = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
 
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
     private analytics: AnalyticsService,
     private router: Router,
     private levelService: LevelsService,
+    private soundsService: SoundService,
   ) {
     if (this.updates.isEnabled) {
       this.isNewVersionAvailable$ = this.updates.available.pipe(
@@ -40,6 +42,7 @@ export class AppComponent implements OnInit {
       this.seenKeyStrokes.shift();
     }
     if (arraysEqual(this.seenKeyStrokes, KONAMI_PATTERN)) {
+      this.soundsService.playSound(Sound.Present);
       this.levelService.completeAllLevels();
     }
   }

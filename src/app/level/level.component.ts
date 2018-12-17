@@ -10,7 +10,7 @@ import { LevelAttemptCell, LevelCell } from '../levels/level.models';
 import { AnalyticsService } from './../analytics.service';
 import { HighScoreService } from './../high-score.service';
 import { LevelsService } from './../levels.service';
-import { SoundService } from './../sound.service';
+import { SoundService, Sound } from './../sound.service';
 
 @Component({
   selector: 'xmas-level',
@@ -51,9 +51,9 @@ export class LevelComponent implements OnInit, OnDestroy {
       )
       .subscribe(cell => {
         if (cell.cell === LevelCell.Present && cell.touchCount < 2) {
-          this.soundService.playSound('present');
+          this.soundService.playSound(Sound.Present);
         } else if (cell.cell === LevelCell.Grinch) {
-          this.soundService.playSound('grinch');
+          this.soundService.playSound(Sound.Grinch);
           this.analytics.sendEvent('Lost level', {
             event_category: 'Game',
             value: this.levelNumber,
