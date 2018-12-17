@@ -30,9 +30,14 @@
     >
       &lt; Level
     </button>
-    <a routerLink="/" class="btn is-success">Home</a>
+    <a routerLink="/" class="btn is-primary">Home</a>
     <button class="btn is-error" type="button" (click)="reset()">Reset</button>
-    <button class="btn" type="button" [disabled]="!hasNext" (click)="gotoLevel(levelNumber + 1)">
+    <button
+      class="btn is-success"
+      type="button"
+      [disabled]="!canProgress"
+      (click)="gotoLevel(levelNumber + 1)"
+    >
       Level &gt;
     </button>
   </nav>

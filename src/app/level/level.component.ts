@@ -31,7 +31,7 @@ export class LevelComponent implements OnInit, OnDestroy {
   level!: LevelAttempt;
   levelNumber!: number;
   highScore!: number | null;
-  hasNext!: boolean;
+  canProgress!: boolean;
   hasPrevious!: boolean;
 
   private levelSubject = new ReplaySubject<LevelAttempt>(1);
@@ -65,6 +65,8 @@ export class LevelComponent implements OnInit, OnDestroy {
             event_category: 'Game',
             value: this.levelNumber,
           });
+          this.levelsService.completeLevel(this.levelNumber);
+          this.canProgress = this.levelsService.canProgress(this.levelNumber);
           if (this.highScore === null || this.level.moves < this.highScore) {
             this.highScoreService.set(this.levelNumber, this.level.moves);
             this.highScore = this.level.moves;
@@ -78,7 +80,7 @@ export class LevelComponent implements OnInit, OnDestroy {
         event_category: 'Game',
         value: this.levelNumber,
       });
-      this.hasNext = this.levelsService.hasNext(this.levelNumber);
+      this.canProgress = this.levelsService.canProgress(this.levelNumber);
       this.hasPrevious = this.levelsService.hasPrevious(this.levelNumber);
       this.highScore = this.highScoreService.get(this.levelNumber);
     });

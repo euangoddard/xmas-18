@@ -20,6 +20,9 @@ export class LevelResolve implements Resolve<LevelAttempt> {
       if (levelAttempt === null) {
         this.router.navigate(['/']);
         return NEVER;
+      } else if (!this.levelsService.canAccess(index + 1)) {
+        this.router.navigate(['/level', this.levelsService.nextAvailableLevel]);
+        return NEVER;
       } else {
         return of(levelAttempt);
       }
