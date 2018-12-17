@@ -40,6 +40,11 @@ export class LevelsService {
     this.updateCache();
   }
 
+  completeAllLevels(): void {
+    this.maxCompletedLevel = this.levels.length;
+    this.updateCache();
+  }
+
   get nextAvailableLevel(): number {
     return this.maxCompletedLevel + 1;
   }
