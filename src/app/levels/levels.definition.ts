@@ -18,4 +18,8 @@ export const LEVELS: ReadonlyArray<Level> = [
   Level.parse('SG\n--\nG-\n--\n-G\n--\nG-\nP-'),
   Level.parse('S----\n-----\n--G--\n---P-\n-----'),
   Level.parse('-----\n-GGG-\n-GS--\n-GGG-\nP---G'),
+  Level.parse('----\n-SG-\n-GGP\n--PG'),
+  Level.parse('SPPP\nPGGG\nPGGG\nPPPP'),
+  Level.parse('S----\n-GG--\n-GG--\n---PP\n---PP'),
+  Level.parse('S-P-G\n-P-G-\nP-G--'),
 ];
