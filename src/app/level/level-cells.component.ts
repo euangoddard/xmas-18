@@ -35,7 +35,7 @@ export class LevelCellsComponent {
     this.moved.emit({ row, column });
   }
 
-  @HostListener('window:keyup', ['$event.keyCode'])
+  @HostListener('window:keydown', ['$event.keyCode'])
   moveWithKey(keyCode: number) {
     switch (keyCode) {
       case 38: // Up arrow

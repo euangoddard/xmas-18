@@ -22,22 +22,12 @@
 <section class="container with-title">
   <h2 class="title">Actions</h2>
   <nav class="btns">
-    <button
-      class="btn"
-      type="button"
-      [disabled]="!hasPrevious"
-      (click)="gotoLevel(levelNumber - 1)"
-    >
+    <button class="btn" type="button" [disabled]="!hasPrevious" (click)="gotoPrevious()">
       &lt; Level
     </button>
     <a routerLink="/" class="btn is-primary">Home</a>
     <button class="btn is-error" type="button" (click)="reset()">Reset</button>
-    <button
-      class="btn is-success"
-      type="button"
-      [disabled]="!canProgress"
-      (click)="gotoLevel(levelNumber + 1)"
-    >
+    <button class="btn is-success" type="button" [disabled]="!canProgress" (click)="gotoNext()">
       Level &gt;
     </button>
   </nav>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -88,7 +88,35 @@ export class LevelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  gotoLevel(levelNumber: number): void {
+  @HostListener('window:keydown', ['$event.keyCode', '$event.shiftKey'])
+  receiveKey(keyCode: number, isShift: boolean) {
+    switch (keyCode) {
+      case 27:
+        this.reset();
+        break;
+      case 13:
+        if (isShift) {
+          this.gotoPrevious();
+        } else {
+          this.gotoNext();
+        }
+        break;
+    }
+  }
+
+  gotoPrevious() {
+    if (this.hasPrevious) {
+      this.gotoLevel(this.levelNumber - 1);
+    }
+  }
+
+  gotoNext(): void {
+    if (this.canProgress) {
+      this.gotoLevel(this.levelNumber + 1);
+    }
+  }
+
+  private gotoLevel(levelNumber: number): void {
     this.router.navigate(['/level', levelNumber]);
   }
 
